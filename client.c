@@ -13,6 +13,9 @@ void    ft_error(char *s)
 // prints error message and terminates 
 // the program with a status code of 1, 
 // indicating error.
+void handle_sigusr1(int sig, siginfo_t *info, void *context) {
+
+    }
 int ft_atoi3(const char *nptr)
 {
     long long   nb;
@@ -55,13 +58,28 @@ void    ft_send_message(int pid, char *s)
             if(check_kill == -1)
                 ft_error("kill function returned an error while sending signal to server");
             *s = *s >> 1;
-            usleep(2000); //in microseconds 10^⁽⁻6) sec
+            usleep(60000000); //in microseconds 10^⁽⁻6) sec
         }
         s++;
     }
 }
 int main(int ac, char **av)
 {
+        struct sigaction sa;
+
+    sigemptyset(&sa.sa_mask);
+    sa.sa_sigaction = handle_sigusr1;  // Specify the handler function
+    sa.sa_flags = 0;                 // No special flags
+    if (sigaction(SIGUSR1, &sa, NULL) == -1)
+    {
+        ft_printf("sigaction\n");
+        exit(1);
+    }
+    if (sigaction(SIGUSR2, &sa, NULL) == -1)
+    {
+        ft_printf("sigaction\n");
+        exit(1);
+    }
 
     if (ac == 3) 
     {

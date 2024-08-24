@@ -1,4 +1,5 @@
 
+#define _POSIX_C_SOURCE 199309L
 #include "minitalk.h"
 char *ft_realloc(char *s, char c)
 {
@@ -33,10 +34,10 @@ void handle_sigusr1(int sig, siginfo_t *info, void *context) {
 
     if (sig == SIGUSR1)
         c += (1 << i);
-        //c >> (7 - i) = 1 >> 7:
         //c |= (1 << i);
+        //c >> (7 - i) = 1 >> 7:
     i++;
-    if (i == 7)
+    if (i == 8)
     {
         if (c == 0)
             {
@@ -45,9 +46,12 @@ void handle_sigusr1(int sig, siginfo_t *info, void *context) {
                 return;
             }
         s = ft_realloc(s, c);
-        //ft_printf("%s\n",s);
-        i = 0;
+        //write(1, &c, 1);
+        ft_printf("%s\n",s);
         c = 0;
+        ft_printf("c devia ser 0, valor :%d\n", c);
+        i = 0;
+        kill(info->si_pid, SIGUSR1);
     }
 
 }
