@@ -6,7 +6,7 @@
 /*   By: ptelo-de <ptelo-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 18:10:08 by ptelo-de          #+#    #+#             */
-/*   Updated: 2024/08/28 21:43:06 by ptelo-de         ###   ########.fr       */
+/*   Updated: 2024/08/28 22:38:25 by ptelo-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,22 @@ void	ft_error(char *s)
 
 void	handle_sigusr2(int sig)
 {
-	static int bytes;
-	(void)sig;
+	static int	bytes;
+	static int	bit;
 
-	bytes++;
-	if(sig == SIGUSR2)
+	(void)sig;
+	if (sig == SIGUSR1)
 	{
-		ft_printf("Message received and printed, bytes: %d\n", bytes);
+		bit++;
+		if (bit == 8)
+		{
+			bytes++;
+			bit = 0;
+		}
+	}
+	else
+	{
+		ft_printf("Message received and printed, bytes: %d\n", bytes + 1);
 		exit(0);
 	}
 }
@@ -63,62 +72,40 @@ int	ft_atoi3(const char *nptr)
 	return (nb);
 }
 
-void	ft_send_message(int pid, char *s)
-{
-	int	i;
-	int	check_kill;
-
-	while (*s)
-	{
-		i = 1;
-		while (i++ <= 8)
-		{
-			if (*s & 1)
-				check_kill = kill(pid, SIGUSR1);
-			else
-				check_kill = kill(pid, SIGUSR2);
-			if (check_kill == -1)
-				ft_error("kill func. returned an error");
-			*s = *s >> 1;
-			usleep(500);
-		}
-		s++;
-	}
-}
-
 void	ft_send_char(int pid, char s)
 {
 	int	i;
 	int	check_kill;
 
-		i = 1;
-		while (i++ <= 8)
-		{
-			if (s & 1)
-				check_kill = kill(pid, SIGUSR1);
-			else
-				check_kill = kill(pid, SIGUSR2);
-			if (check_kill == -1)
-				ft_error("kill func. returned an error");
-			s = s >> 1;
-			usleep(500);
-		}
+	i = 1;
+	while (i++ <= 8)
+	{
+		if (s & 1)
+			check_kill = kill(pid, SIGUSR1);
+		else
+			check_kill = kill(pid, SIGUSR2);
+		if (check_kill == -1)
+			ft_error("kill func. returned an error");
+		s = s >> 1;
+		usleep(500);
+	}
 }
 
 int	main(int ac, char **av)
 {
-	int		pid;
+	int	pid;
 
 	signal(SIGUSR1, handle_sigusr2);
 	signal(SIGUSR2, handle_sigusr2);
 	if (ac == 3)
 	{
 		pid = ft_atoi3(av[1]);
-		ft_send_message(pid, av[2]);
+		ac = 0;
+		while (av[2][ac])
+			ft_send_char(pid, av[2][ac++]);
 		ft_send_char(pid, 0);
-		while(1)
+		while (1)
 			pause();
-		
 	}
 	else
 		ft_error("Too many or too little arguments");

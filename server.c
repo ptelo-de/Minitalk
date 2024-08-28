@@ -6,7 +6,7 @@
 /*   By: ptelo-de <ptelo-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 18:10:36 by ptelo-de          #+#    #+#             */
-/*   Updated: 2024/08/28 20:23:22 by ptelo-de         ###   ########.fr       */
+/*   Updated: 2024/08/28 22:38:30 by ptelo-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ char	*ft_realloc(char *s, char c)
 	if (!result)
 		return (NULL);
 	if (s)
-		ft_memmove(result, s, l);
-	//	ft_strlcpy(result, s, l + 1);
+		ft_strlcpy(result, s, l + 1);
 	result[l++] = c;
 	result[l] = 0;
 	free(s);
@@ -55,15 +54,15 @@ void	handle_sigusr1(int sig, siginfo_t *info, void *context)
 		{
 			ft_printf("%s\n", s);
 			free(s);
-			s = NULL ;
+			s = NULL;
 			kill(pid_client, SIGUSR2);
 		}
 		else
 			s = ft_realloc(s, c);
 		c = 0;
 		i = 0;
-		kill(pid_client, SIGUSR1);
 	}
+	kill(pid_client, SIGUSR1);
 }
 
 int	main(void)
