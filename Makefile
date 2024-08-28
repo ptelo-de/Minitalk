@@ -14,7 +14,7 @@ clean:
 	make clean -C ./libft
 fclean:
 	make fclean -C ./libft
-	rm server client
+	rm -f $(SERVER_NAME) $(CLIENT_NAME)
 re: fclean all
 
 
