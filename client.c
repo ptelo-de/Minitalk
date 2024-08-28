@@ -6,7 +6,7 @@
 /*   By: ptelo-de <ptelo-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 18:10:08 by ptelo-de          #+#    #+#             */
-/*   Updated: 2024/08/28 14:11:54 by ptelo-de         ###   ########.fr       */
+/*   Updated: 2024/08/28 20:07:29 by ptelo-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,17 @@ void	ft_error(char *s)
 // the program with a status code of 1,
 // indicating error.
 
-void	handle_sigusr1(int sig, siginfo_t *info, void *context)
+void	handle_sigusr2(int sig)
 {
+	static int bytes;
 	(void)sig;
-	(void)info;
-	(void)context;
+
+	bytes++;
+	if(sig == SIGUSR2)
+	{
+		ft_printf("Message was received and printed on server, bytes: %d", bytes);
+		exit(0);
+	}
 }
 
 int	ft_atoi3(const char *nptr)
@@ -74,7 +80,7 @@ void	ft_send_message(int pid, char *s)
 			if (check_kill == -1)
 				ft_error("kill func. returned an error");
 			*s = *s >> 1;
-			usleep(1000);
+			usleep(500);
 		}
 		s++;
 	}
@@ -95,33 +101,24 @@ void	ft_send_char(int pid, char s)
 			if (check_kill == -1)
 				ft_error("kill func. returned an error");
 			s = s >> 1;
-			usleep(1000);
+			usleep(500);
 		}
 }
 
 int	main(int ac, char **av)
 {
-	struct sigaction	sa;
 	int		pid;
 
-	sigemptyset(&sa.sa_mask);
-	sa.sa_sigaction = handle_sigusr1;
-	sa.sa_flags = 0;
-	if (sigaction(SIGUSR1, &sa, NULL) == -1)
-	{
-		ft_printf("sigaction\n");
-		exit(1);
-	}
-	if (sigaction(SIGUSR2, &sa, NULL) == -1)
-	{
-		ft_printf("sigaction\n");
-		exit(1);
-	}
+	signal(SIGUSR1, handle_sigusr2);
+	signal(SIGUSR2, handle_sigusr2);
 	if (ac == 3)
 	{
 		pid = ft_atoi3(av[1]);
 		ft_send_message(pid, av[2]);
 		ft_send_char(pid, 0);
+		while(1)
+			pause();
+		
 	}
 	else
 		ft_error("Too many or too little arguments");
