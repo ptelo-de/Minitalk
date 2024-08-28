@@ -6,7 +6,7 @@
 /*   By: ptelo-de <ptelo-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 18:10:08 by ptelo-de          #+#    #+#             */
-/*   Updated: 2024/08/28 13:02:46 by ptelo-de         ###   ########.fr       */
+/*   Updated: 2024/08/28 14:11:54 by ptelo-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,15 +74,35 @@ void	ft_send_message(int pid, char *s)
 			if (check_kill == -1)
 				ft_error("kill func. returned an error");
 			*s = *s >> 1;
-			usleep(600);
+			usleep(1000);
 		}
 		s++;
 	}
 }
 
+void	ft_send_char(int pid, char s)
+{
+	int	i;
+	int	check_kill;
+
+		i = 1;
+		while (i++ <= 8)
+		{
+			if (s & 1)
+				check_kill = kill(pid, SIGUSR1);
+			else
+				check_kill = kill(pid, SIGUSR2);
+			if (check_kill == -1)
+				ft_error("kill func. returned an error");
+			s = s >> 1;
+			usleep(1000);
+		}
+}
+
 int	main(int ac, char **av)
 {
 	struct sigaction	sa;
+	int		pid;
 
 	sigemptyset(&sa.sa_mask);
 	sa.sa_sigaction = handle_sigusr1;
@@ -99,7 +119,9 @@ int	main(int ac, char **av)
 	}
 	if (ac == 3)
 	{
-		ft_send_message(ft_atoi3(av[1]), av[2]);
+		pid = ft_atoi3(av[1]);
+		ft_send_message(pid, av[2]);
+		ft_send_char(pid, 0);
 	}
 	else
 		ft_error("Too many or too little arguments");
