@@ -6,7 +6,7 @@
 /*   By: ptelo-de <ptelo-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 21:08:05 by ptelo-de          #+#    #+#             */
-/*   Updated: 2024/08/24 19:38:06 by ptelo-de         ###   ########.fr       */
+/*   Updated: 2024/08/25 18:11:16 by ptelo-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 	size_t	i;
 	size_t	lsrc;
 
-	lsrc = ft_strlen(src); 
+	lsrc = ft_strlen(src);
 	if (size == 0)
 		return (lsrc);
 	i = 0;

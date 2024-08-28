@@ -1,89 +1,97 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ptelo-de <ptelo-de@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/25 18:10:36 by ptelo-de          #+#    #+#             */
+/*   Updated: 2024/08/28 13:07:51 by ptelo-de         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#define _POSIX_C_SOURCE 199309L
 #include "minitalk.h"
-char *ft_realloc(char *s, char c)
+
+char	*ft_realloc(char *s, char c)
 {
-    char *result;
-    int l;
+	char	*result;
+	int		l;
 
-    if(!s)
-        l = 0;
-    else
-        l = ft_strlen(s);
-    result = malloc(sizeof(char)*(l + 2));
-    if(!result )
-        return(NULL);
-    if(s)
-        ft_strlcpy(result, s, l + 1);
-    result[l++] = c;
-    result[l] = 0;
-    free(s);
-    s = NULL;
-    return(result);
+	if (!s)
+		l = 0;
+	else
+		l = ft_strlen(s);
+	result = malloc(sizeof(char) * (l + 2));
+	if (!result)
+		return (NULL);
+	if (s)
+		ft_strlcpy(result, s, l + 1);
+	result[l++] = c;
+	result[l] = 0;
+	free(s);
+	s = NULL;
+	return (result);
 }
-//the above function appends a caracter to previous string, handling memory reallocation
 
-void handle_sigusr1(int sig, siginfo_t *info, void *context) {
-    (void)context;
-    static int pid_client;
-    pid_client = info->si_pid;
-    (void)pid_client;
-    static int c;
-    static int i;
-    static char *s;
+// the above function appends a caracter to previous string,
+//	handling memory reallocation
 
-    if (sig == SIGUSR1)
-        c += (1 << i);
-        //c |= (1 << i);
-        //c >> (7 - i) = 1 >> 7:
-    i++;
-    if (i == 8)
-    {
-        if (c == 0)
-            {
-                ft_printf("%s\n", s);
-                free(s);
-                return;
-            }
-        s = ft_realloc(s, c);
-        //write(1, &c, 1);
-        ft_printf("%s\n",s);
-        c = 0;
-        ft_printf("c devia ser 0, valor :%d\n", c);
-        i = 0;
-        kill(info->si_pid, SIGUSR1);
-    }
-
-}
-int main(void)
+void	handle_sigusr1(int sig, siginfo_t *info, void *context)
 {
-    struct sigaction sa;
+	static int	pid_client;
+	static int	c;
+	static int	i;
+	static char	*s;
 
-    ft_printf("PID: %d\n", getpid());
-    sigemptyset(&sa.sa_mask);
-    sa.sa_sigaction = handle_sigusr1;  // Specify the handler function
-    sa.sa_flags = 0;                 // No special flags
-    if (sigaction(SIGUSR1, &sa, NULL) == -1)
-    {
-        ft_printf("sigaction\n");
-        exit(1);
-    }
-    if (sigaction(SIGUSR2, &sa, NULL) == -1)
-    {
-        ft_printf("sigaction\n");
-        exit(1);
-    }
-    while(1)
-    {
-        pause();//justify this instead of usllep()
-    }
-    return(0);
+	(void)context;
+	pid_client = info->si_pid;
+	if (sig == SIGUSR1)
+		c += (1 << i);
+	i++;
+	if (i == 8)
+	{
+		if (c == 0)
+		{
+			ft_printf("%s\n", s);
+			free(s);
+			return ;
+		}
+		s = ft_realloc(s, c);
+		c = 0;
+		i = 0;
+		kill(pid_client, SIGUSR1);
+	}
 }
-//ler 32 bits, while i <= 32 salva no len.
-//allocar s com len array
-//coverter bits de cada caracter
-//guardar cada caracter no array
-//ft_putstr_fd()
+
+int	main(void)
+{
+	struct sigaction	sa;
+
+	ft_printf("PID: %d\n", getpid());
+	sigemptyset(&sa.sa_mask);
+	sa.sa_sigaction = handle_sigusr1;
+	sa.sa_flags = 0;
+	if (sigaction(SIGUSR1, &sa, NULL) == -1)
+	{
+		ft_printf("sigaction\n");
+		exit(1);
+	}
+	if (sigaction(SIGUSR2, &sa, NULL) == -1)
+	{
+		ft_printf("sigaction\n");
+		exit(1);
+	}
+	while (1)
+	{
+		pause();
+	}
+	return (0);
+}
+// ler 32 bits, while i <= 32 salva no len.
+// allocar s com len array
+// coverter bits de cada caracter
+// guardar cada caracter no array
+// ft_putstr_fd()
 // Feature Test Macro Requirements for glibc (see feature_test_macros(7)):
 
 //        sigaction(): _POSIX_C_SOURCE
