@@ -6,7 +6,7 @@
 /*   By: ptelo-de <ptelo-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 18:10:08 by ptelo-de          #+#    #+#             */
-/*   Updated: 2024/08/28 20:07:29 by ptelo-de         ###   ########.fr       */
+/*   Updated: 2024/08/28 21:43:06 by ptelo-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	handle_sigusr2(int sig)
 	bytes++;
 	if(sig == SIGUSR2)
 	{
-		ft_printf("Message was received and printed on server, bytes: %d", bytes);
+		ft_printf("Message received and printed, bytes: %d\n", bytes);
 		exit(0);
 	}
 }
@@ -59,7 +59,7 @@ int	ft_atoi3(const char *nptr)
 		i++;
 	}
 	if (nptr[i] || nb > 2147483647 || nb < -2147483648)
-		ft_error("n atoi input, integer overflow or wrong chars");
+		ft_error("In atoi input, integer overflow or wrong chars");
 	return (nb);
 }
 
