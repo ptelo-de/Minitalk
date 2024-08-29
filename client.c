@@ -6,7 +6,7 @@
 /*   By: ptelo-de <ptelo-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 18:10:08 by ptelo-de          #+#    #+#             */
-/*   Updated: 2024/08/28 22:38:25 by ptelo-de         ###   ########.fr       */
+/*   Updated: 2024/08/29 15:51:50 by ptelo-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,6 @@ int	ft_atoi3(const char *nptr)
 	if (!nptr[0])
 		ft_error("empty string in atoi input");
 	while (((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32))
-		i++;
-	if (nptr[i] == '+' && nptr[i + 1] != 0)
 		i++;
 	while (nptr[i] <= '9' && nptr[i] >= '0')
 	{
